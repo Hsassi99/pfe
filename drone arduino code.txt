@@ -1,0 +1,99 @@
+#include <Servo.h>
+#include <Wire.h>
+#include <MPU6050.h>
+
+Servo motor1, motor2, motor3, motor4;
+MPU6050 imu;
+
+// Bluetooth communication variables
+int state = 0;
+
+void setup() {
+  // Initialize Serial for debugging and Bluetooth communication
+  Serial.begin(9600);
+
+  // Initialize the MPU6050
+  Wire.begin();
+  imu.initialize();
+  if (!imu.testConnection()) {
+    Serial.println("MPU6050 connection failed");
+  } else {
+    Serial.println("MPU6050 connection successful");
+  }
+
+  // Attach motors to their respective pins
+  motor1.attach(3);
+  motor2.attach(5);
+  motor3.attach(6);
+  motor4.attach(9);
+
+  // Arm ESCs by setting throttle to low
+  motor1.writeMicroseconds(1000);
+  motor2.writeMicroseconds(1000);
+  motor3.writeMicroseconds(1000);
+  motor4.writeMicroseconds(1000);
+  
+  delay(7000); // Wait for ESCs to initialize
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    state = Serial.read(); // Read Bluetooth data
+    handleControl(state);
+  }
+
+  // Basic stabilization (This part would need significant expansion for actual flight)
+  int16_t ax, ay, az;
+  imu.getAcceleration(&ax, &ay, &az);
+
+  // Placeholder for actual stabilization logic
+  stabilizeDrone(ax, ay, az);
+}
+
+void handleControl(int command) {
+  // Placeholder for drone control logic based on command received via Bluetooth
+  switch(command) {
+    case 'U': // Up
+      increaseThrottle();
+      break;
+    case 'D': // Down
+      decreaseThrottle();
+      break;
+    case 'L': // Left
+      adjustYaw(-10);
+      break;
+    case 'R': // Right
+      adjustYaw(10);
+      break;
+    // Add more cases as needed for other commands
+  }
+}
+
+void increaseThrottle() {
+  // Increase motor speed
+  motor1.writeMicroseconds(1200);
+  motor2.writeMicroseconds(1200);
+  motor3.writeMicroseconds(1200);
+  motor4.writeMicroseconds(1200);
+}
+
+void decreaseThrottle() {
+  // Decrease motor speed
+  motor1.writeMicroseconds(1000);
+  motor2.writeMicroseconds(1000);
+  motor3.writeMicroseconds(1000);
+  motor4.writeMicroseconds(1000);
+}
+
+void adjustYaw(int change) {
+  // Adjust yaw by changing motor speeds opposite each other
+  motor1.writeMicroseconds(1100 + change);
+  motor3.writeMicroseconds(1100 - change);
+  motor2.writeMicroseconds(1100 + change);
+  motor4.writeMicroseconds(1100 - change);
+}
+
+void stabilizeDrone(int16_t ax, int16_t ay, int16_t az) {
+  // Basic placeholder logic for stabilization
+  // Real stabilization would involve PID controllers and more complex algorithms
+}

@@ -1,0 +1,53 @@
+{% extends 'drone_app/base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* General styles for the content area */
+    .content {
+        margin: 20px;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        list-style: none; /* Removes default list styling */
+        padding: 0;
+    }
+
+    li {
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center items horizontally */
+    }
+
+    img {
+        max-width: 100%; /* Ensures images are responsive */
+        height: auto;
+        border-radius: 8px; /* Rounded corners for images */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: transform 0.2s; /* Smooth scaling on hover */
+    }
+
+    img:hover {
+        transform: scale(1.05); /* Slightly enlarge images on hover */
+    }
+</style>
+<div class="content" style="background-color: #7678dc95;">
+<h2 style="font-size:40px;font-family: 'Courier New';">Visual Evidence</h2>
+<ul>
+    {% for image in images %}
+        <li><img src="{% static 'img/'|add:image %}" alt="Visual evidence"></li>
+    {% endfor %}
+</ul>
+</div>
+{%endblock%}

@@ -1,0 +1,34 @@
+{% extends 'drone_app/base_generic.html' %}
+
+{% load static %}
+
+{% block title %}Live Drone Stream{% endblock %}
+
+{% block content %}
+<style>
+    input{margin-left: 400px; width:285px;}
+    button{ margin-left: 475px; width:130px; font-size:20px;font-family: 'Gill Sans';}
+
+</style>
+<div class="container">
+    <h1 style="font-size:40px;font-family: 'Courier New'; margin-top:15px; text-align:center;" class="mt-5">Live Drone Stream</h1>
+    <form id="streamForm" onsubmit="return startStream();">
+        <div class="form-group">
+            <input style="width:285px;" type="text" id="ipAddress" class="form-control" placeholder="Enter IP address" required>
+        </div>
+        <button style="background:#244b76;" type="submit" class="btn btn-primary">Start Streaming</button>
+    </form>
+    <div id="video-stream-container" class="mt-3">
+        <img id="drone-stream" src="" class="img-fluid" alt="Drone Live Stream" style="width:100%; height: auto; display: none;">
+    </div>
+</div>
+<script>
+    function startStream() {
+        var ip = document.getElementById('ipAddress').value;
+        var stream = document.getElementById('drone-stream');
+        stream.src = 'http://' + ip + ':5000/video_feed'; 
+        stream.style.display = 'block'; 
+        return false; // Prevent form submission
+    }
+</script>
+{% endblock %}

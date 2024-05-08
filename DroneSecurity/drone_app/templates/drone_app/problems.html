@@ -1,0 +1,103 @@
+{% extends 'drone_app/base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .container a{
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+        
+    }
+    .mb-4{
+        margin-top: 20px;
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .col-md-3 {
+        flex: 0 0 24%;
+        margin-bottom: 20px;
+        background: #f8f9fa;
+        padding: 30px ;
+        margin-top: 20px    ;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        background-color: #8d8ff0ab;
+    }
+    .col-md-3:hover {
+        transform: translateY(-8px);
+        background-color: #7678dc;
+    }
+    .dp,h2 {
+        color: #333;
+        text-align: center;
+        margin-top: 20px;
+    }
+    ul {
+        padding: 0;
+        list-style-type: none;
+    }
+    video, img {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 10px;
+    }
+    .vv{
+        color: #3d3fd7;
+    }
+</style>
+<body > 
+
+<div class="container a">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="dp" style="font-size:40px;font-family: 'Courier New'; ">Detected Problems</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h2>  <a class="vv" href="http://127.0.0.1:8000/drone_app/video_feed">Detection Live Stream</a></h2>
+          
+            <div id="video-stream-container">
+                <video id="detection-live-stream" controls autoplay hidden></video>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h2>Problem Details</h2>
+            <ul>
+                {% for detail in problem_details %}
+                    <li>{{ detail|linebreaksbr }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-3">
+            <h2><a class="vv" href="{% url 'img_view' %}">Visual Evidence</a></h2>
+            
+            <ul>
+                {% for image in images %}
+                    <li><img src="{% static 'img/'|add:image %}" alt="Visual evidence"></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-3">
+            <h2 class="text-center mb-3">Actions Taken</h2>
+            <p style="text-align: center;">Steps taken to resolve the issues.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function startStream() {
+        var ip = '127.0.0.1'; // Change this to your server's IP if different
+        var stream = document.getElementById('detection-live-stream');
+        stream.src = 'http://' + ip + ':8000/drone_app/video_feed'; // Update port and path if necessary
+        stream.hidden = false;
+        return false; // Prevent form submission
+    }
+</script>
+    
+</body>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'drone_app/base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2>Application Settings</h2>
+    <ul class="nav nav-tabs" id="settingsTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="drone-tab" data-toggle="tab" href="#drone" role="tab" aria-controls="drone" aria-selected="true">Drone Settings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="user-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">User Management</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="settingsTabContent">
+        <div class="tab-pane fade show active" id="drone" role="tabpanel" aria-labelledby="drone-tab">
+            <!-- Drone settings form -->
+        </div>
+        <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="user-tab">
+            <!-- User management form -->
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 50px auto; 
+    padding: 20px;
+    background: #ffffff; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px; 
+}
+
+form {
+    margin-bottom: 30px; 
+    text-align: center;
+}
+
+input[type="text"] {
+    width: calc(100% - 24px); 
+    padding: 12px;
+    margin-right: 10px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box; 
+}
+
+input[type="text"]:focus {
+    border-color: #304154;
+    outline: none;
+}
+
+button {
+    padding: 12px 24px; 
+    background-color: #3e038b; 
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s; 
+}
+
+button:hover {
+    background-color: #320073; 
+}
+
+#video-stream-container {
+    text-align: center;
+}
+
+#drone-stream {
+    width: 100%;
+    max-width: 100%; 
+    height: auto;
+    border-radius: 6px;
+}

@@ -1,0 +1,60 @@
+{% extends 'drone_app/base_generic.html' %}
+
+{% load static %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="C:\Users\hsass\Desktop\drone1\DroneSecurity\staticfiles\css\css_admin.css">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    
+    <style>
+
+        label{margin-left: 350px; font-size:20px;font-family: 'Gill Sans';}
+        input{margin-left: 400px; width:285px;}
+        button{ margin-left: 475px; width:130px; font-size:20px;font-family: 'Gill Sans';}
+        .inscription{ margin-left: 475px; width:130px; font-size:20px;font-family: 'Gill Sans';}
+        .cap {
+        display: flex;
+        margin-bottom: 5px;
+        width: 100%; 
+        margin: left 280px; ;
+        
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+        <h2  style="font-size:40px;font-family: 'Courier New'; margin-top:15px;" class="text-center mb-4">Admin Login</h2>
+        {% if error_message %}
+            <div class="error-message"><script>alert('{{ error_message }}');</script></div>
+        {% endif %}
+        <form method="post" action="{% url 'login_view' %}">
+            {% csrf_token %}    
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input style="width:285px;" class="form-control" type="text" id="username" name="username" required  placeholder="eg@exemple.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input style="width:285px; margin-bottom: 28px; " class="form-control" type="password" id="password" name="password" required>
+                <a class="inscription" href="http://127.0.0.1:8000/drone_app/inscription">Create Account</a>
+            </div>
+            <div class="cap">
+                {{ form.non_field_errors }}
+                {{ form.as_p }}
+            </div>
+            <button style="background:#244b76;" type="submit">Login</button>
+        </form>
+    </div>
+    </div>
+</body>
+</html>
+{% endblock %}

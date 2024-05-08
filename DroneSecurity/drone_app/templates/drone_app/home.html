@@ -1,0 +1,30 @@
+{% extends 'drone_app/base_generic.html' %}
+
+{% load static %}
+
+{% block additional_styles %}
+<style>
+    .home-background {
+      background-image: url("{% static 'images/drone.webp' %}");
+        min-height: 100vh;  /* Ensures that the minimum height is the full viewport height */
+        width: 100%;        /* Ensures the width covers the full width of the viewport */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;  /* Ensures the background covers the entire element */
+        position: fixed;    /* Keeps the background fixed during scrolling */
+        top: 0;
+        left: 0;
+        z-index: -1;      
+    }
+</style>
+{% endblock %}
+
+{% if error %}
+<script>alert('{{ error }}')</script>
+{% endif %}
+
+{% block content %}
+<div class="home-background">
+  <h1 class="text-center"  style="color: rgb(0, 0, 0);">Welcome to Drone Security</h1>
+</div>
+{% endblock %}
