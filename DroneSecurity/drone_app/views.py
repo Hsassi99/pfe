@@ -11,6 +11,11 @@ import os
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
+import requests
+
+from django.http import HttpResponse
+
+
 #torch bech n5admo yolo
 
 from django.http import JsonResponse
@@ -29,9 +34,21 @@ class CaptchaTestForm(forms.Form):
     captcha = ReCaptchaField()
 
 
+
+def proxy_stream(request):
+    stream_url = "http://192.168.218.168:4000/?video_feed"  # MJPEG Stream URL
+    try:
+        resp = requests.get(stream_url, stream=True)
+        return StreamingHttpResponse(streaming_content=resp.iter_content(chunk_size=1024*1024),
+                                     content_type=resp.headers['Content-Type'])
+    except Exception as e:
+        # Log the error for debugging
+        print("Error connecting to the video stream: ", str(e))
+        return StreamingHttpResponse("Error connecting to the video stream", status=500)
+
 def gen_frames():
     # Initialize video capture
-    cap = cv2.VideoCapture(0)  # Change this to your camera ID or video source URL
+    cap = cv2.VideoCapture("http://192.168.218.168:4000/?video_feed")  # Change this to your camera ID or video source URL
     if not cap.isOpened():
         print("Error: Could not open video source.")
         return
@@ -82,7 +99,6 @@ def problems_detected(request):
     return render(request, 'drone_app/problems.html')
 def about_us(request):
     return render(request, 'drone_app/about_us.html')
-
 def inscription(request):
     return render(request, 'drone_app/inscription.html')
 
@@ -167,3 +183,45 @@ def problem_view(request):
     print("View was called")
     return render(request, 'drone_app/problems.html', context)
 
+
+
+
+#user manager 
+
+
+def delete_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        try:
+            user = User.objects.get(username=username)
+            user.delete()
+            return HttpResponse("User deleted successfully.")
+        except User.DoesNotExist:
+            return HttpResponse("User does not exist.")
+
+def change_password(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        new_password = request.POST.get('new_password')
+        try:
+            user = User.objects.get(username=username)
+            user.set_password(new_password)
+            user.save()
+            return HttpResponse("Password changed successfully.")
+        except User.DoesNotExist:
+            return HttpResponse("User does not exist.")
+        
+def send_drone_command(request):
+    if request.method == 'POST':
+        command = request.POST.get('command')
+        if command == 'block_stream':
+            # Code to send command to block the stream
+            pass
+        elif command == 'shutdown':
+            # Code to send command to shutdown the drone
+            pass
+        elif command == 'restart_stream':
+            # Code to restart the stream
+            pass
+        return HttpResponse(f"Command '{command}' sent successfully.")
+    return HttpResponse("Invalid request", status=400)

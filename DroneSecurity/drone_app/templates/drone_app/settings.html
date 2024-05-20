@@ -15,9 +15,37 @@
     <div class="tab-content" id="settingsTabContent">
         <div class="tab-pane fade show active" id="drone" role="tabpanel" aria-labelledby="drone-tab">
             <!-- Drone settings form -->
+            <form method="post" action="{% url 'send_drone_command' %}">
+                {% csrf_token %}
+                <button type="submit" name="command" value="block_stream">Block Stream</button>
+                <button type="submit" name="command" value="shutdown">Shutdown</button>
+                <button type="submit" name="command" value="restart_stream">Restart Stream</button>
+            </form>
         </div>
         <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="user-tab">
             <!-- User management form -->
+            
+            <h3>User Management</h3>
+    <div>
+        <h4>Delete User</h4>
+        <form method="post" action="{% url 'delete_user' %}">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <button type="submit">Delete User</button>
+        </form>
+    </div>
+    <div>
+        <h4>Change Password</h4>
+        <form method="post" action="{% url 'change_password' %}">
+            {% csrf_token %}
+            <label for="username_pw">Username:</label>
+            <input type="text" id="username_pw" name="username" required>
+            <label for="new_password">New Password:</label>
+            <input type="password" id="new_password" name="new_password" required>
+            <button type="submit">Change Password</button>
+        </form>
+    </div>
         </div>
     </div>
 </div>

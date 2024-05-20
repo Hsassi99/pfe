@@ -29,4 +29,8 @@ urlpatterns = [
     path('about_us/', views.about_us, name='about_us'),
     path('setting/', views.setting, name='setting'),
     path('inscription/', views.inscription_view, name='inscription_view'),
+    path('delete_user/', views.delete_user, name='delete_user'),
+    path('change_password/', views.change_password, name='change_password'),
+    path('send_drone_command/', views.send_drone_command, name='send_drone_command'),
+    path('stream-proxy/', views.proxy_stream, name='stream-proxy'),
 ]

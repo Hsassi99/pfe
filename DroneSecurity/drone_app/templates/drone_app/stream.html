@@ -26,7 +26,7 @@
     function startStream() {
         var ip = document.getElementById('ipAddress').value;
         var stream = document.getElementById('drone-stream');
-        stream.src = 'http://' + ip + ':5000/video_feed'; 
+        stream.src = 'http://'+ip+':4000/?video_feed'; 
         stream.style.display = 'block'; 
         return false; // Prevent form submission
     }

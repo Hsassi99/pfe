@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'django_recaptcha',
+    'django_extensions',
     #"drone_app",
 ]
 
