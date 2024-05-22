@@ -48,12 +48,11 @@ def proxy_stream(request):
 
 def gen_frames():
     # Initialize video capture
-    cap = cv2.VideoCapture("http://192.168.218.168:4000/?video_feed")  # Change this to your camera ID or video source URL
+    cap = cv2.VideoCapture(0)  # Change this to your camera ID or video source URL
     if not cap.isOpened():
         print("Error: Could not open video source.")
         return
-    
-    # Get the YOLO model loaded in apps.py
+
     app_config = apps.get_app_config('drone_app')
     model = app_config.model
 
@@ -125,7 +124,7 @@ def inscription_view(request):
 
 def img_view(request):
 
-    img_directory = os.path.join('C:/Users/hsass/Desktop/drone1/DroneSecurity', 'static', 'img')
+    img_directory = os.path.join(settings.BASE_DIR, 'static', 'img')
     img_files = [f for f in os.listdir(img_directory) if os.path.isfile(os.path.join(img_directory, f))]
     print("Image files:", img_files)
 
@@ -148,7 +147,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('http://127.0.0.1:8000/drone_app/problems/')
+                return redirect('drone_app/problems/')
             else:
                 context['error_message'] = 'Invalid username or password'
         else:
@@ -161,7 +160,7 @@ def login_view(request):
 
 
 def problem_view(request):
-    problem_file_path = os.path.join('C:/Users/hsass/Desktop/drone1/DroneSecurity', 'static', 'problem.txt')
+    problem_file_path = os.path.join(settings.BASE_DIR, 'static', 'problem.txt')
     try:
         with open(problem_file_path, 'r') as file:
             problem_details = file.readlines()

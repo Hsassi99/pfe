@@ -45,7 +45,7 @@
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input style="width:285px; margin-bottom: 28px; " class="form-control" type="password" id="password" name="password" required>
-                <a class="inscription" href="http://127.0.0.1:8000/drone_app/inscription">Create Account</a>
+                <a class="inscription" href="{% url 'inscription_view'%}">Create Account</a>
             </div>
             <div class="cap">
                 {{ form.non_field_errors }}

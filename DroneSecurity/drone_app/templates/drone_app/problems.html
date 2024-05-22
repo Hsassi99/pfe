@@ -59,7 +59,7 @@
     </div>
     <div class="row">
         <div class="col-md-3">
-            <h2>  <a class="vv" href="http://127.0.0.1:8000/drone_app/video_feed">Detection Live Stream</a>  </h2>
+            <h2>  <a class="vv" href="{% url 'video_feed' %}">Detection Live Stream</a>  </h2>
           
             <div id="video-stream-container">
                 <video id="detection-live-stream" controls autoplay hidden></video>
@@ -88,16 +88,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    function startStream() {
-        var ip = '127.0.0.1'; // Change this to your server's IP if different
-        var stream = document.getElementById('detection-live-stream');
-        stream.src = 'http://' + ip + ':8000/drone_app/video_feed'; // Update port and path if necessary
-        stream.hidden = false;
-        return false; // Prevent form submission
-    }
-</script>
     
 </body>
 {% endblock %}
