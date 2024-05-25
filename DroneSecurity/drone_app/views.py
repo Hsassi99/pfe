@@ -26,6 +26,10 @@ from django.http import StreamingHttpResponse
 from django.apps import apps
 import cv2
 
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+
 
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
@@ -83,6 +87,13 @@ def video_feed(request):
     return StreamingHttpResponse(gen_frames(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 
+def send_command(request, command):
+    url = 'http://192.168.37.168:5000/control'
+    data = {'command': command}
+    requests.post(url, data=data)
+    messages.success(request, "Command sent successfully!")
+
+    return redirect('setting')
 
 def home(request):
     print(os.path.join(settings.BASE_DIR, 'drone_app/templates'))
@@ -101,25 +112,7 @@ def about_us(request):
 def inscription(request):
     return render(request, 'drone_app/inscription.html')
 
-def inscription_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            if user:
-                login(request, user)
-                messages.success(request, "Registration successful.")
-                return redirect('home')  # Redirect to home or any other page
-            else:
-                messages.error(request, "Authentication failed. Please try again.")
-        else:
-            messages.error(request, "Invalid form submission. Please check the data provided.")
-    else:
-        form = UserCreationForm()
-    return render(request, 'drone_app/inscription.html', {'form': form})
+
 
 
 def img_view(request):
@@ -147,7 +140,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('drone_app/problems/')
+                return redirect('problems_detected')  # Use the correct named URL pattern here
             else:
                 context['error_message'] = 'Invalid username or password'
         else:
@@ -155,7 +148,25 @@ def login_view(request):
 
     return render(request, 'drone_app/admin_data.html', context)
 
-
+def inscription_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            if user:
+                login(request, user)
+                messages.success(request, "Registration successful.")
+                return redirect('home')  # Redirect to home or any other page
+            else:
+                messages.error(request, "Authentication failed. Please try again.")
+        else:
+            messages.error(request, "Invalid form submission. Please check the data provided.")
+    else:
+        form = UserCreationForm()
+    return render(request, 'drone_app/inscription.html', {'form': form})
 
 
 

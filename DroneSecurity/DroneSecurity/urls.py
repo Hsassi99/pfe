@@ -22,4 +22,5 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('drone_app/', include('drone_app.urls')),
+   # path('drone_app/', include(('drone_app.urls', 'drone_app'), namespace='drone_app')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

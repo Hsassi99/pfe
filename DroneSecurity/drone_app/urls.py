@@ -33,4 +33,5 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     path('send_drone_command/', views.send_drone_command, name='send_drone_command'),
     path('stream-proxy/', views.proxy_stream, name='stream-proxy'),
+    path('send_command/<str:command>/', views.send_command, name='send_command'),
 ]

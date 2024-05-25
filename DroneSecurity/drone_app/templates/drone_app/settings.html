@@ -11,42 +11,167 @@
         <li class="nav-item">
             <a class="nav-link" id="user-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">User Management</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="database-tab" data-toggle="tab" href="#database" role="tab" aria-controls="database" aria-selected="false">Database Management</a>
+        </li>
     </ul>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        .btn {
+            margin-top: 10px;
+            width: 200px;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
+
     <div class="tab-content" id="settingsTabContent">
         <div class="tab-pane fade show active" id="drone" role="tabpanel" aria-labelledby="drone-tab">
-            <!-- Drone settings form -->
-            <form method="post" action="{% url 'send_drone_command' %}">
-                {% csrf_token %}
-                <button type="submit" name="command" value="block_stream">Block Stream</button>
-                <button type="submit" name="command" value="shutdown">Shutdown</button>
-                <button type="submit" name="command" value="restart_stream">Restart Stream</button>
-            </form>
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">Drone Battery Level</div>
+                        <div class="card-body">
+                            <canvas id="batteryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">Weather Information</div>
+                        <div class="card-body" id="weather-info">
+                            <!-- Weather info will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h3>Drone Commands</h3>
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                <form method="post" action="{% url 'send_command' 'block_stream' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning">Block Stream</button>
+                </form>
+                <form method="post" action="{% url 'send_command' 'shutdown' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Shutdown</button>
+                </form>
+                <form method="post" action="{% url 'send_command' 'restart_stream' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Restart Stream</button>
+                </form>
+            </div>
         </div>
+
         <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="user-tab">
-            <!-- User management form -->
-            
-            <h3>User Management</h3>
-    <div>
-        <h4>Delete User</h4>
-        <form method="post" action="{% url 'delete_user' %}">
-            {% csrf_token %}
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <button type="submit">Delete User</button>
-        </form>
-    </div>
-    <div>
-        <h4>Change Password</h4>
-        <form method="post" action="{% url 'change_password' %}">
-            {% csrf_token %}
-            <label for="username_pw">Username:</label>
-            <input type="text" id="username_pw" name="username" required>
-            <label for="new_password">New Password:</label>
-            <input type="password" id="new_password" name="new_password" required>
-            <button type="submit">Change Password</button>
-        </form>
-    </div>
+            <h3 class="mt-4">User Management</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Delete User</h4>
+                    <form method="post" action="{% url 'delete_user' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Delete User</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h4>Change Password</h4>
+                    <form method="post" action="{% url 'change_password' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username_pw">Username:</label>
+                            <input type="text" id="username_pw" name="username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password:</label>
+                            <input type="password" id="new_password" name="new_password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="database" role="tabpanel" aria-labelledby="database-tab">
+            <h3 class="mt-4">Database Management</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Backup Database</h4>
+                    <button type="button" class="btn btn-secondary" id="dbBackup">Backup</button>
+                </div>
+                <div class="col-md-6">
+                    <h4>Restore Database</h4>
+                    <form>
+                        <div class="form-group">
+                            <input type="file" class="form-control-file" id="dbRestore">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Restore</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Include jQuery first -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Battery level chart
+    var ctx = document.getElementById('batteryChart').getContext('2d');
+    var batteryChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [{
+                label: 'Battery Level',
+                data: [65, 59, 80, 0, 56, 55, 40],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Weather information
+    function fetchWeather() {
+        $.ajax({
+            url: 'https://api.openweathermap.org/data/2.5/weather?q=MAHDIA&appid=1714ff6a766aa149cc58bde997cd6e2d',
+            method: 'GET',
+            success: function(data) {
+                $('#weather-info').html(`
+                    <p><strong>City:</strong> ${data.name}</p>
+                    <p><strong>Temperature:</strong> ${(data.main.temp - 273.15).toFixed(2)} °C</p>
+                    <p><strong>Weather:</strong> ${data.weather[0].description}</p>
+                `);
+            },
+            error: function(error) {
+                console.error('Error fetching weather data:', error);
+                $('#weather-info').html('<p>Failed to retrieve weather data. Please try again later.</p>');
+            }
+        });
+    }
+    fetchWeather();
+</script>
 {% endblock %}
