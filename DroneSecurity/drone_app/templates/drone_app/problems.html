@@ -3,13 +3,12 @@
 
 {% block content %}
 <style>
-    .container a{
+    .container {
         max-width: 1200px;
         margin: auto;
         padding: 20px;
-        
     }
-    .mb-4{
+    .mb-4 {
         margin-top: 20px;
     }
     .row {
@@ -21,8 +20,8 @@
         flex: 0 0 24%;
         margin-bottom: 20px;
         background: #f8f9fa;
-        padding: 30px ;
-        margin-top: 20px    ;
+        padding: 30px;
+        margin-top: 20px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         background-color: #8d8ff0ab;
     }
@@ -30,10 +29,8 @@
         transform: translateY(-8px);
         background-color: #7678dc;
     }
-    .dp,h2 {
-        color: #333;
+    .text-center, h2, p {
         text-align: center;
-        margin-top: 20px;
     }
     ul {
         padding: 0;
@@ -45,22 +42,24 @@
         display: block;
         margin-bottom: 10px;
     }
-    .vv{
+    .link-hover {
         color: #3d3fd7;
+        text-decoration: none;
+    }
+    .link-hover:hover {
+        color: #2a2bc8;
     }
 </style>
-<body > 
 
-<div class="container a">
+<div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="dp" style="font-size:40px;font-family: 'Courier New'; ">Detected Problems</h1>
+            <h1 class="text-center" style="font-size:40px; font-family: 'Courier New', monospace;">Detected Problems</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-md-3">
-            <h2>  <a class="vv" href="{% url 'video_feed' %}">Detection Live Stream</a>  </h2>
-          
+            <h2><a class="link-hover" href="{% url 'video_feed' %}">Detection Live Stream</a></h2>
             <div id="video-stream-container">
                 <video id="detection-live-stream" controls autoplay hidden></video>
             </div>
@@ -74,20 +73,22 @@
             </ul>
         </div>
         <div class="col-md-3">
-            <h2><a class="vv" href="{% url 'img_view' %}">Visual Evidence</a></h2>
-            
+            <h2><a class="link-hover" href="{% url 'img_view' %}">Visual Evidence</a></h2>
             <ul>
                 {% for image in images %}
-                    <li><img src="{% static 'img/'|add:image %}" alt="Visual evidence"></li>
+                    <li><img src="{% static 'img/'|add:image %}" alt="Visual evidence" class="img-fluid"></li>
                 {% endfor %}
             </ul>
         </div>
         <div class="col-md-3">
-            <h2 class="text-center mb-3">Actions Taken</h2>
-            <p style="text-align: center;">Steps taken to resolve the issues.</p>
+            <h2>Actions Taken</h2>
+            <ul>
+                {% for action in actions_needed %}
+                <li>Action: {{ action }}</li>
+                {% endfor %}
+        </div>
+            </ul>
         </div>
     </div>
 </div>
-    
-</body>
 {% endblock %}

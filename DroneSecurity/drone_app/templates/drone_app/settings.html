@@ -27,6 +27,7 @@
         .form-group {
             margin-bottom: 15px;
         }
+        
     </style>
 
     <div class="tab-content" id="settingsTabContent">
@@ -46,30 +47,32 @@
                         <div class="card-body" id="weather-info">
                             <!-- Weather info will be loaded here -->
                         </div>
+                        <hr>
+                        <div class="card">
+                            <h3>Drone Commands</h3>
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            <form   method="post" action="{% url 'send_command' 'block_stream' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-warning">Block Stream</button>
+                            </form>
+                            <form method="post" action="{% url 'send_command' 'shutdown' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Shutdown</button>
+                            </form>
+                            <form method="post" action="{% url 'send_command' 'restart_stream' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">Restart Stream</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-4">
-                <h3>Drone Commands</h3>
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-                <form method="post" action="{% url 'send_command' 'block_stream' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-warning">Block Stream</button>
-                </form>
-                <form method="post" action="{% url 'send_command' 'shutdown' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Shutdown</button>
-                </form>
-                <form method="post" action="{% url 'send_command' 'restart_stream' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success">Restart Stream</button>
-                </form>
-            </div>
+
         </div>
 
         <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="user-tab">
@@ -109,8 +112,12 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4>Backup Database</h4>
-                    <button type="button" class="btn btn-secondary" id="dbBackup">Backup</button>
-                </div>
+                    
+                <form action="{% url 'trigger_backup' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">Get Database Backup</button>
+                </form>
+            </div>
                 <div class="col-md-6">
                     <h4>Restore Database</h4>
                     <form>
@@ -120,11 +127,38 @@
                         <button type="submit" class="btn btn-primary">Restore</button>
                     </form>
                 </div>
-            </div>
+                </div>
+                <br>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Last Login</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.last_login|date:"Y-m-d H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4">No users found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            
         </div>
     </div>
 </div>
-
 <!-- Include jQuery first -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -135,10 +169,10 @@
     var batteryChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: ['1 ', '2 ', '3', '4', '5', '6', '7'],
             datasets: [{
                 label: 'Battery Level',
-                data: [65, 59, 80, 0, 56, 55, 40],
+                data: [90, 88, 85, 80, 78, 74, 73],
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: true

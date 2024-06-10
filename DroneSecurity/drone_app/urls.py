@@ -17,6 +17,7 @@ Including another URLconf
 # drone_app/urls.py
 from django.urls import path
 from . import views
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -34,4 +35,7 @@ urlpatterns = [
     path('send_drone_command/', views.send_drone_command, name='send_drone_command'),
     path('stream-proxy/', views.proxy_stream, name='stream-proxy'),
     path('send_command/<str:command>/', views.send_command, name='send_command'),
+    path('backup/', views.trigger_backup, name='trigger_backup'),
+    path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
+    path('list_users/', views.list_users, name='list_users'),
 ]

@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os 
+from datetime import timedelta
+
+AXES_FAILURE_LIMIT = 5  # Number of failed attempts before locking out
+AXES_COOLOFF_TIME = timedelta(hours=1)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,8 +44,26 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django_recaptcha',
     'django_extensions',
+    'axes',
+    # 'channels',
     #"drone_app",
 ]
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',  # This could be AxesModelBackend depending on your version
+    'django.contrib.auth.backends.ModelBackend',  # Keep Django's default backend
+]
+
+
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -51,7 +73,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'axes.middleware.AxesMiddleware',
 ]
+
 
 ROOT_URLCONF = "DroneSecurity.urls"
 
@@ -80,15 +104,15 @@ WSGI_APPLICATION = "DroneSecurity.wsgi.application"
 
 DATABASES = {
     "default": {
-       # "ENGINE": "django.db.backends.sqlite3",
-       # "NAME": BASE_DIR / "db1.sqlite3",
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "pfedatabase",
-        "USER": "pfe",
-        "PASSWORD": "Nabta@10102002",
-        "HOST": "pfe.postgres.database.azure.com",
-        "PORT": "5432",
-        "OPTIONS":{"sslmode":"require"}
+       "ENGINE": "django.db.backends.sqlite3",
+       "NAME": BASE_DIR / "db.sqlite3",
+        #"ENGINE": "django.db.backends.postgresql",
+        #"NAME": "pfedatabase",
+        # "USER": "pfe",
+        # "PASSWORD": "Nabta@10102002",
+        # "HOST": "pfe.postgres.database.azure.com",
+        # "PORT": "5432",
+        # "OPTIONS":{"sslmode":"require"}
     }
 }
 
